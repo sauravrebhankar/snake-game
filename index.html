@@ -13,13 +13,19 @@
             margin: 0;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
+            touch-action: none;
         }
         #game-container {
             text-align: center;
+            position: relative;
+            width: 100%;
+            max-width: 400px;
         }
         #game-board {
             border: 2px solid #333;
             display: none;
+            width: 100%;
+            height: auto;
         }
         #score {
             font-size: 24px;
@@ -52,6 +58,23 @@
             height: 200px;
             margin-bottom: 20px;
         }
+        #touch-controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        .touch-area {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+        }
+        #touch-up { top: 0; left: 25%; height: 25%; }
+        #touch-down { bottom: 0; left: 25%; height: 25%; }
+        #touch-left { top: 25%; left: 0; width: 25%; }
+        #touch-right { top: 25%; right: 0; width: 25%; }
     </style>
 </head>
 <body>
@@ -64,6 +87,12 @@
         </div>
         <canvas id="game-board" width="400" height="400"></canvas>
         <div id="score">Score: 0</div>
+        <div id="touch-controls">
+            <div id="touch-up" class="touch-area"></div>
+            <div id="touch-down" class="touch-area"></div>
+            <div id="touch-left" class="touch-area"></div>
+            <div id="touch-right" class="touch-area"></div>
+        </div>
     </div>
 
     <script>
@@ -72,6 +101,7 @@
         const scoreElement = document.getElementById('score');
         const startScreen = document.getElementById('start-screen');
         const startButton = document.getElementById('start-button');
+        const touchControls = document.getElementById('touch-controls');
 
         const gridSize = 20;
         const tileCount = canvas.width / gridSize;
@@ -91,6 +121,7 @@
             startScreen.style.display = 'none';
             canvas.style.display = 'block';
             scoreElement.style.display = 'block';
+            touchControls.style.display = 'block';
             resetGame();
             gameLoop = setInterval(drawGame, 100);
         }
@@ -170,6 +201,7 @@
             startScreen.style.display = 'block';
             canvas.style.display = 'none';
             scoreElement.style.display = 'none';
+            touchControls.style.display = 'none';
         }
 
         function updateScore() {
@@ -211,6 +243,44 @@
                 dy = 1;
             }
         }
+
+        // Touch controls
+        const touchUp = document.getElementById('touch-up');
+        const touchDown = document.getElementById('touch-down');
+        const touchLeft = document.getElementById('touch-left');
+        const touchRight = document.getElementById('touch-right');
+
+        touchUp.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (dy !== 1) {
+                dx = 0;
+                dy = -1;
+            }
+        });
+
+        touchDown.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (dy !== -1) {
+                dx = 0;
+                dy = 1;
+            }
+        });
+
+        touchLeft.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (dx !== 1) {
+                dx = -1;
+                dy = 0;
+            }
+        });
+
+        touchRight.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (dx !== -1) {
+                dx = 1;
+                dy = 0;
+            }
+        });
     </script>
 </body>
 </html>
